@@ -5,16 +5,18 @@ import cors from "cors";
 import express from "express";
 import fileUpload from "express-fileupload";
 import mongoose from "mongoose";
-//import authRouter from "./routers/authRouter.js";
+import authRouter from "./routers/auth-router.js";
 //import pinRouter from "./routers/pinRouter.js"
 
 
 const app = express()
 
-app.use(cors({origin: "*"})) // Настройка cors
-app.use(express.json()) // Запросы представлены в формате json
-app.use(express.static("static")) // Добавление возможности загружать статические файлы
-app.use(fileUpload({})) // Загрузка файлов
+app.use(cors({origin: "*"}));
+app.use(express.json());
+app.use(express.static("static"));
+app.use(fileUpload({}));
+
+app.use("/auth", authRouter);
 
 
 // Функция для запуска проекта
