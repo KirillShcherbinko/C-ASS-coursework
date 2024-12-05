@@ -1,6 +1,5 @@
 import bcrypt from "bcryptjs";
 import { MY_SECRET } from "../config.js";
-
 import jwt from "jsonwebtoken";
 import FileService from "./file-service.js";
 import User from "../models/User.js";
