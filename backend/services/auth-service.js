@@ -1,5 +1,5 @@
-import {hashSync, compareSync} from "bcryptjs";
-import {MY_SECRET} from "../config.js";
+import bcrypt from "bcryptjs";
+import { MY_SECRET } from "../config.js";
 
 import jwt from "jsonwebtoken";
 import FileService from "./file-service.js";
@@ -27,7 +27,9 @@ class AuthService {
         // Данные о роли
         let fetchedRoleData;
 
-        roleData.photo = FileService.saveFile(roleData.photo) || "../static/default-image.jpg";
+        if (roleData.photo) {
+            FileService.saveFile(roleData.photo);
+        } 
         // Добавление данных в зависимости от роли
         if (role === "athlete") {
             fetchedRoleData = new Athlete({...roleData});
@@ -42,7 +44,7 @@ class AuthService {
 
 
         // Хэширование пароля
-        const hashPassword = hashSync(password, 8);
+        const hashPassword = bcrypt.hashSync(password, 8);
 
         // Создание нового пользователя
         const user = new User({ 
@@ -64,7 +66,7 @@ class AuthService {
         }
 
         // Проверка на корректность пароля
-        const validPassword = compareSync(password, user.password);
+        const validPassword = bcrypt.compareSync(password, user.password);
         if (!validPassword) {
             throw new Error("Введён неверный пароль");
         }

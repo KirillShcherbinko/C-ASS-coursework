@@ -1,12 +1,12 @@
 import { validationResult } from "express-validator"
-import AuthService from "../services/authService.js"
+import AuthService from "../services/auth-service.js"
 
 class AuthController {
     // Метод для обработки регистрации
     static async registration(req, res) {
         try {
             // Обработка возможных ошибок
-            const errors = validationResult(req)
+            const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 const errorMessages = errors.array().map(err => err.msg);
                 return res.status(400).json({ message: errorMessages });

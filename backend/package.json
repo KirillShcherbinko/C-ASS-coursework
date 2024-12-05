@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "express-validator": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.2",
+    "nodemon": "^3.1.7",
     "uuid": "^11.0.3"
   }
 }

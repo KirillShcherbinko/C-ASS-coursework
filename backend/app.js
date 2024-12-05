@@ -16,7 +16,10 @@ app.use(express.json());
 app.use(express.static("static"));
 app.use(fileUpload({}));
 
+//app.use("/", mainRouter);
 app.use("/auth", authRouter);
+//app.use("/profile", profileRouter);
+//app.use("/news", newsRouter);
 
 
 // Функция для запуска проекта
