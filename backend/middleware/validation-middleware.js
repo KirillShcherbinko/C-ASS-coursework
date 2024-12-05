@@ -1,10 +1,12 @@
 import { check } from "express-validator";
 
 const validateData = (req, res, next) => {
-        
+    
+    // Обрабатываем общие поля
     check("email", "Введите корректный адрес электронной почты").isEmail();
     check("password", "Пароль должен быть длиной от 4 до 12 символов").isLength({min: 4, max: 12});
 
+    // Обрабатываем поля в зависимости от роли
     if (req.body.role === "athlete") {
         check("surname", "Некорректное значение фамилии").matches("^[А-Я][а-я]+$");
         check("name", "Некорректное значение имени").matches("^[А-Я][а-я]+$");
