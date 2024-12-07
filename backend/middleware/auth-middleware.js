@@ -9,7 +9,7 @@ const authMiddleware = (req, res, next) => {
 
         // Проверка на сущестование токена
         if(!token) {
-            return res.status(403).json({message: "Токен не найден"});
+            return res.status(403).json({ message: "Токен не найден" });
         }
 
         // Декодируем данные
@@ -18,8 +18,8 @@ const authMiddleware = (req, res, next) => {
 
         next();
 
-    } catch(e) {
-        return res.status(403).json({message: "Ошибка авторизации"});
+    } catch(err) {
+        return res.status(403).json({ message: `Ошибка авторизации: ${err.message}` });
     }
 }
 

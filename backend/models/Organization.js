@@ -6,20 +6,11 @@ const OrganizationSchema = new Schema({
     news: { links: [{ type: Schema.Types.ObjectId, ref: "News" }], default: [] },
 
     // Данные об оранизации
-    organizationName: { 
-        type: String, 
-        required: [true, "Поле название организации обязательно"] },
-    address: { 
-        type: String, 
-        required: [true, "Поле адрес обязательно"], 
-        minlength: [10, "Слишком короткий адрес для такой крупной компании"] 
-    },
-    description: { 
-        type: String, 
-        maxlength: [300, "Слишком много букв"], 
-        default: "" },
-    photo: { type: String, default: "default.jpg" },
-    contacts: { type: String, default: "" }
+    organizationName: { type: String, required: true },
+    address: { type: String, required: true },
+    description: { type: String },
+    photo: { type: String, default: "default-image.jpg" },
+    contacts: { type: String }
 });
 
 const Organization = model("Organization", OrganizationSchema);

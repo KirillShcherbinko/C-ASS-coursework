@@ -4,7 +4,7 @@ import ProfileService from "../services/profile-service.js";
 class ProfileController {
     static async getProfile(req, res) {
         try {
-            const profile = await ProfileService.getProfile(req.params.userId);
+            const profile = await ProfileService.getProfile(req.user.id);
             return res.status(200).json({message: "Данные получены", profile: profile});
         } catch (err) {
             res.status(500).json({message: err.message || "Ошибка при получении данных"});
@@ -13,7 +13,15 @@ class ProfileController {
 
     static async updateProfile(req, res) {
         try {
-            const updatedProfile = await ProfileService.updateProfile(req.params.userId, req.body);
+            // Входные данные
+            const newData = req.body;
+
+            // Проверка на недопустимые поля для обновления
+            if (newData.applications || newData.email || newData.password) {
+                throw new Error("Не удалось обновить данные");
+            }
+
+            const updatedProfile = await ProfileService.updateProfile(req.user.id, newData);
             return res.status(200).json({message: "Данные обновлены", profile: updatedProfile});
         } catch (err) {
             res.status(500).json({message: err.message || "Ошибка при обновлении данных"});
@@ -22,7 +30,7 @@ class ProfileController {
 
     static async getApplications(req, res) {
         try {
-            const applications = await ProfileService.getApplications(req.params.userId);
+            const applications = await ProfileService.getApplications(req.user.id);
             return res.status(200).json({message: "Заявки получены", applications: applications});
         } catch (err) {
             res.status(500).json({message: err.message || "Ошибка при получении заявок"});
@@ -37,8 +45,28 @@ class ProfileController {
                 const errorMessages = errors.array().map(err => err.msg);
                 return res.status(400).json({ message: errorMessages });
             }
+            
+            // Получение данных
+            const applicationId = req.params.applicationId;
+            const status = req.body.status;
 
-            const updatedApplication = await ProfileService.updateApplication(req.params.userId, req.body);
+            // Проверка роли
+            if (req.user.role !== "organization") {
+                throw new Error("Доступ только для организации");
+            }
+
+            // Проверка параметров
+            if (!applicationId) {
+                throw new Error("Неверное значение id заявки");
+            }
+
+            // Проверка статуса
+            if (status !== "accepted" && status !== "rejected") {
+                throw new Error("Неверное значение статуса заявки");
+            }
+
+            // Обновление данных
+            const updatedApplication = await ProfileService.updateApplication(req.user.id, applicationId, status);
             return res.status(200).json({message: "Статус заявки обновлён", application: updatedApplication});
         } catch (err) {
             res.status(500).json({message: err.message || "Ошибка при обновлении статуса заявки"});

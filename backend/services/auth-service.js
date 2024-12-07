@@ -8,8 +8,8 @@ import Organization from "../models/Organization.js";
 
 
 // Функция для генерации токена
-const generateAccessToken = (id) => {
-    const payload = { id };
+const generateAccessToken = (id, role) => {
+    const payload = { id, role };
     return jwt.sign(payload, MY_SECRET, { expiresIn: "2h" });
 }
 
@@ -39,8 +39,6 @@ class AuthService {
         } else {
             throw new Error("Роль указана неверно");
         }
-        
-
 
         // Хэширование пароля
         const hashPassword = bcrypt.hashSync(password, 8);
@@ -67,7 +65,7 @@ class AuthService {
         // Проверка на корректность пароля
         const validPassword = bcrypt.compareSync(password, user.password);
         if (!validPassword) {
-            throw new Error("Введён неверный пароль");
+            throw new Error(`Введён неверный пароль ${password}`);
         }
 
         // Сохраняем токен
