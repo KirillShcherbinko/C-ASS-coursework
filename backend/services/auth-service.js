@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import { MY_SECRET } from "../config.js";
 import jwt from "jsonwebtoken";
-import FileService from "./file-service.js";
 import User from "../models/User.js";
 import Athlete from "../models/Athlete.js";
 import Organization from "../models/Organization.js";
@@ -25,10 +24,7 @@ class AuthService {
 
         // Данные о роли
         let fetchedRoleData;
-
-        if (roleData.photo) {
-            FileService.saveFile(roleData.photo);
-        } 
+        
         // Добавление данных в зависимости от роли
         if (role === "athlete") {
             fetchedRoleData = new Athlete({...roleData});
@@ -69,7 +65,7 @@ class AuthService {
         }
 
         // Сохраняем токен
-        const token = generateAccessToken(user._id);
+        const token = generateAccessToken(user._id, user.role);
         return token;
     }
 }

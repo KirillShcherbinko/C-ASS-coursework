@@ -25,5 +25,5 @@ const AthleteSchema = new Schema({
     height: { type: Number }
 });
 
-const Athlete = model("Athlete", AthleteSchema);
+const Athlete = model("athlete", AthleteSchema);
 export default Athlete;

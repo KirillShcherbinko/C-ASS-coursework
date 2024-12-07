@@ -1,5 +1,6 @@
-import { validationResult } from "express-validator"
-import AuthService from "../services/auth-service.js"
+import { validationResult } from "express-validator";
+import AuthService from "../services/auth-service.js";
+import FileService from "../services/file-service.js";
 
 class AuthController {
     // Метод для обработки регистрации
@@ -13,7 +14,13 @@ class AuthController {
             }
 
             // Создаём нового пользователя
-            const { email, password, role, ...roleData } = req.body
+            const { email, password, role, ...roleData } = req.body;
+
+            if (req.files.photo) {
+                const fileName = FileService.saveFile(req.files.photo);
+                roleData.photo = fileName;
+            } 
+            
             await AuthService.registration(email, password, role, roleData);
 
             res.status(201).json({ message: "Успешная регистрация" })
@@ -28,7 +35,7 @@ class AuthController {
         try {
             // Осуществляем вход в аккаунт
             const {email, password} = req.body
-            const token = await AuthService.login(email, password)
+            const token = await AuthService.login(email, password);
 
             // Сообщаем об успешом входе в аккаунт
             res.status(200).json({

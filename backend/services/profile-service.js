@@ -1,6 +1,6 @@
-import User from "../models/User";
-import Athlete from "../models/Athlete";
-import Organization from "../models/Organization";
+import User from "../models/User.js";
+import Athlete from "../models/Athlete.js";
+import Organization from "../models/Organization.js";
 import FileService from "../services/file-service.js";
 
 // Функция для проверки пользователя
@@ -24,46 +24,41 @@ const checkRoleData = (roleData) => {
 // Функция для проверки заявок
 const checkApplications = (applications) => {
     if (!applications || applications.length === 0) {
-        return {message: "Список заявок пуст"};
+        throw new Error ("Список заявок пуст");
     }
     return applications;
 }
 
 class ProfileService {
     static async getProfile(userId) {
-        const user = checkUser(userId);
+        const user = await checkUser(userId);
         const roleData = checkRoleData(user.roleData);
 
         return {message: "Данные получены успешно", roleData};
     }
 
     static async updateProfile(userId, newData) {
-        // Получение данных пользователя
-        const user = await User.findById(userId);
-        if (!user) {
-            throw new Error("Пользователь не найден");
-        }
+        // Получение данных пользователя с ролью
+        const user = await checkUser(userId);
+        const roleData = checkRoleData(user.roleData);
     
-        // Получение ссылки на роль
-        let roleModel;
-        if (user.role === "organization") {
-            roleModel = Organization;
-        } else if (user.role === "athlete") {
-            roleModel = Athlete;
-        } else {
+        // Определение модели роли
+        const roleModels = {
+            organization: Organization,
+            athlete: Athlete,
+        };
+        
+        const roleModel = roleModels[user.role];
+        if (!roleModel) {
             throw new Error("Данная модель содержит неверную роль");
         }
 
-        // Измнение фото
-        if (newData.photo) {
-            newData.photo = FileService.saveFile(newData.photo);
-            if (user.roleData.photo !== "default.jpg") {
-                FileService.deleteFile(user.roleData.photo);
-            }
+        if (roleData.photo && roleData.photo !== "default-image.jpg") {
+            FileService.deleteFile(roleData.photo);
         }
     
-        // Получение и обновление данных роли
-        const updatedRoleData = await roleModel.findByIdAndUpdate(user.roleData, newData, { new: true });
+        // Обновление данных роли
+        const updatedRoleData = await roleModel.findByIdAndUpdate(roleData._id, newData, { new: true });
         if (!updatedRoleData) {
             throw new Error("Ошибка при обновлении данных роли");
         }
@@ -71,10 +66,11 @@ class ProfileService {
         return updatedRoleData;
     }
     
+    
 
     static async getApplications(userId) {
 
-        const user = checkUser(userId);
+        const user = await checkUser(userId);
         const roleData = checkRoleData(user.roleData);
         const applications = checkApplications(roleData.applications);
 
@@ -83,7 +79,7 @@ class ProfileService {
 
     static async updateApplication(userId, applicationId, status) {
 
-        const user = checkUser(userId);
+        const user = await checkUser(userId);
         const roleData = checkRoleData(user.roleData);
         const applications = checkApplications(roleData.applications);
 
@@ -97,7 +93,7 @@ class ProfileService {
 
         application.status = status;
 
-        await user.roleData.save();
+        await roleData.save();
 
         return {message: "Заявка успешно получена", application};
     }

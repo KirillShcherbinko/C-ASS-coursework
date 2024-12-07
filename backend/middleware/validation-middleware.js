@@ -58,7 +58,7 @@ import { check } from "express-validator";
         next();
     }
 
-    const validateOptinalMiddleware = async (req, res, next) => {
+    const validateOptionalMiddleware = async (req, res, next) => {
         const validations = [];
         if (req.user.role === "athlete") {
             validations.push(
@@ -97,4 +97,4 @@ import { check } from "express-validator";
 
     }
 
-export default {validateRegistrationMiddleware, validateOptinalMiddleware, validateApplicationMiddleware};
+export { validateRegistrationMiddleware, validateOptionalMiddleware, validateApplicationMiddleware };

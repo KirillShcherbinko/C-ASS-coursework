@@ -1,6 +1,6 @@
 import {v4 as uuidv4} from "uuid";
 import {resolve} from "path";
-import { promises as fs } from "fs";
+import { existsSync, unlinkSync } from "fs";
 
 class FileService {
     // Метод для сохранения файла на диске
@@ -19,13 +19,17 @@ class FileService {
         }
     }
 
-
     // Метод для удаления файла
     static deleteFile(fileName) {
         try {
             const filePath = resolve("static", fileName);
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
+
+            try {
+                if (existsSync(filePath)) {
+                    unlinkSync(filePath);
+                }
+            } catch {
+                throw new Error("Файл не найден");
             }
         } catch (err) {
             throw new Error(err.message);

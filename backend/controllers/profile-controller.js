@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import ProfileService from "../services/profile-service.js";
+import FileService from "../services/file-service.js";
 
 class ProfileController {
     static async getProfile(req, res) {
@@ -13,12 +14,24 @@ class ProfileController {
 
     static async updateProfile(req, res) {
         try {
+            // Обработка возможных ошибок
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                const errorMessages = errors.array().map(err => err.msg);
+                return res.status(400).json({ message: errorMessages });
+            }
+
             // Входные данные
             const newData = req.body;
 
             // Проверка на недопустимые поля для обновления
-            if (newData.applications || newData.email || newData.password) {
+            if (newData.applications || newData.email || newData.password || newData.role) {
                 throw new Error("Не удалось обновить данные");
+            }
+
+            // Изменение фото (если новое фото предоставлено)
+            if (req.files.photo) {
+                newData.photo = FileService.saveFile(req.files.photo);
             }
 
             const updatedProfile = await ProfileService.updateProfile(req.user.id, newData);
@@ -38,14 +51,7 @@ class ProfileController {
     }
 
     static async updateApplication(req, res) {
-        try {
-            // Обработка возможных ошибок
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                const errorMessages = errors.array().map(err => err.msg);
-                return res.status(400).json({ message: errorMessages });
-            }
-            
+        try {      
             // Получение данных
             const applicationId = req.params.applicationId;
             const status = req.body.status;

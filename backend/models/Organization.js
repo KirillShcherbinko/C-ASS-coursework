@@ -13,5 +13,5 @@ const OrganizationSchema = new Schema({
     contacts: { type: String }
 });
 
-const Organization = model("Organization", OrganizationSchema);
+const Organization = model("organization", OrganizationSchema);
 export default Organization;
