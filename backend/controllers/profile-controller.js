@@ -26,11 +26,11 @@ class ProfileController {
 
             // Проверка на недопустимые поля для обновления
             if (newData.applications || newData.email || newData.password || newData.role) {
-                throw new Error("Не удалось обновить данные");
+                return res.status(400).json({message: "Не удалось обновить данные"});
             }
 
             // Изменение фото (если новое фото предоставлено)
-            if (req.files.photo) {
+            if (req.files && req.files.photo) {
                 newData.photo = FileService.saveFile(req.files.photo);
             }
 
@@ -58,17 +58,17 @@ class ProfileController {
 
             // Проверка роли
             if (req.user.role !== "organization") {
-                throw new Error("Доступ только для организации");
+                return res.status(403).json({message: "Доступ только для организации"});       
             }
 
             // Проверка параметров
             if (!applicationId) {
-                throw new Error("Неверное значение id заявки");
+                return res.status(400).json({message: "Неверное значение id заявки"});
             }
 
             // Проверка статуса
             if (status !== "accepted" && status !== "rejected") {
-                throw new Error("Неверное значение статуса заявки");
+                return res.status(400).json({message: "Неверное значение статуса заявки"});
             }
 
             // Обновление данных

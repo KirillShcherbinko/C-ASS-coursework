@@ -42,10 +42,10 @@ import { check } from "express-validator";
             validations.push(
                 check("organizationName", "Поле название организации не может быть пустым")
                     .notEmpty(),
-                check("organizationAddress", "Поле адрес организации не может быть пустым")
+                check("address", "Поле адрес организации не может быть пустым")
                     .notEmpty(),
-                check("organizationAddress", "Адрес: число символов от 10 до 300")
-                    .optional().isLength({min: 10, max: 300}),
+                check("address", "Адрес: число символов от 10 до 300")
+                    .isLength({min: 10, max: 300}),
                 check("description", "Описание: число символов от 10 до 300")
                     .optional().isLength({min: 10, max: 300}),
             );
@@ -77,7 +77,7 @@ import { check } from "express-validator";
             );
         } else if (req.user.role === "organization") {
             validations.push(
-                check("organizationAddress", "Адрес: число символов от 10 до 300")
+                check("address", "Адрес: число символов от 10 до 300")
                     .optional().isLength({min: 10, max: 300}),
                 check("description", "Описание: число символов от 10 до 300")
                     .optional().isLength({min: 10, max: 300})
@@ -93,8 +93,41 @@ import { check } from "express-validator";
         next();
     }
 
+    const validateEventMiddleware = async (req, res, next) => {
+        const validations = [];
+        if (req.user.role === "organization") {
+            validations.push(
+                check("title", "Поле название события не может быть пустым")
+                    .notEmpty(),
+                check("description", "Описание: число символов от 10 до 300")
+                    .optional().isLength({min: 10, max: 300}),
+                check("sport", "Поле спорт не может быть пустым")
+                    .notEmpty(),
+                check("date", "Поле дата не может быть пустым")
+                    .notEmpty(),
+                check("location", "Поле место события не может быть пустым")
+                    .notEmpty(),
+                check("location", "Место события: число символов от 10 до 300")
+                    .isLength({min: 10, max: 300})
+            );
+        } else {
+            return res.status(400).json({message: "Указана неверная роль"});
+        }
+
+        for (let validation of validations) {
+            await validation.run(req);
+        }
+
+        next();
+    }
+
     const validateApplicationMiddleware = (req, res, next) => {
 
     }
 
-export { validateRegistrationMiddleware, validateOptionalMiddleware, validateApplicationMiddleware };
+export { 
+    validateRegistrationMiddleware, 
+    validateOptionalMiddleware, 
+    validateEventMiddleware, 
+    validateApplicationMiddleware 
+};

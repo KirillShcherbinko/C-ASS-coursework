@@ -7,6 +7,7 @@ import fileUpload from "express-fileupload";
 import mongoose from "mongoose";
 import authRouter from "./routers/auth-router.js";
 import profileRouter from "./routers/profile-router.js";
+import mainRouter from "./routers/main-router.js";
 //import pinRouter from "./routers/pinRouter.js"
 
 
@@ -17,7 +18,7 @@ app.use(express.json());
 app.use(express.static("static"));
 app.use(fileUpload({}));
 
-//app.use("/", mainRouter);
+app.use("/main", mainRouter);
 app.use("/auth", authRouter);
 app.use("/profile", profileRouter);
 //app.use("/news", newsRouter);

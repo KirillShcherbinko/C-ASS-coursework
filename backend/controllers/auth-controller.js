@@ -16,7 +16,7 @@ class AuthController {
             // Создаём нового пользователя
             const { email, password, role, ...roleData } = req.body;
 
-            if (req.files.photo) {
+            if (req.files && req.files.photo) {
                 const fileName = FileService.saveFile(req.files.photo);
                 roleData.photo = fileName;
             } 
