@@ -6,6 +6,7 @@ class MainService {
     static async getAllEvents() {
         try {
             const events = await Event.find();
+            console.log( process.env.HOSTNAME);
             return events;
         } catch(err) {
             throw new Error("Не удалось получить события");

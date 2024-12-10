@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken"
-import { MY_SECRET } from "../config.js";
 
 // Функция для декодирования jwt токена
 const authMiddleware = (req, res, next) => {
@@ -13,7 +12,7 @@ const authMiddleware = (req, res, next) => {
         }
 
         // Декодируем данные
-        const decodedData = jwt.verify(token, MY_SECRET);
+        const decodedData = jwt.verify(token, process.env.MY_SECRET);
         req.user = decodedData;
 
         console.log(req.user);

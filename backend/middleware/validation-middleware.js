@@ -26,7 +26,8 @@ import { check } from "express-validator";
                     .matches("^[А-Я][а-я]+$"),
                 check("patronymic", "Поле отчество: допустимы только русские буквы, первая буква - заглавная")
                     .optional().matches("^[А-Я][а-я]+$"),
-                check("sport", "Поле спорт обязательно").notEmpty(),
+                check("sport", "Поле спорт обязательно")
+                    .notEmpty(),
                 check("achievements", "Достижения: число символов от 10 до 300")
                     .optional().isLength({min: 10, max: 300}),
                 check("age", "Поле возраст обязательно")

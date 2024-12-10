@@ -13,7 +13,9 @@ services:
       - "80:80"
     depends_on:
       - mongodb
-      - backend
+      - backend-1
+      - backend-2
+      - backend-3
       - frontend
     networks:
       - dev
@@ -29,8 +31,34 @@ services:
     volumes:
       - mongo-data:/data/db
 
-  backend:
-    container_name: coursework-backend
+  backend-1:
+    container_name: coursework-backend-1
+    environment:
+      - PORT=5000
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend/static:/static
+    networks:
+      - dev
+
+  backend-2:
+    container_name: coursework-backend-2
+    environment:
+      - PORT=5001
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend/static:/static
+    networks:
+      - dev
+
+  backend-3:
+    container_name: coursework-backend-3
+    environment:
+      - PORT=5002
     build:
       context: ./backend
       dockerfile: Dockerfile

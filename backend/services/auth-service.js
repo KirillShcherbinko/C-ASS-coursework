@@ -1,5 +1,4 @@
 import bcrypt from "bcryptjs";
-import { MY_SECRET } from "../config.js";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Athlete from "../models/Athlete.js";
@@ -9,7 +8,7 @@ import Organization from "../models/Organization.js";
 // Функция для генерации токена
 const generateAccessToken = (id, role) => {
     const payload = { id, role };
-    return jwt.sign(payload, MY_SECRET, { expiresIn: "2h" });
+    return jwt.sign(payload, process.env.MY_SECRET, { expiresIn: "2h" });
 }
 
 class AuthService {
