@@ -3,7 +3,7 @@
       <b-row class="justify-content-center">
         <b-col md="6">
           <b-card title="Регистрация организации">
-            <b-form @submit.prevent="registerOrganization">
+            <b-form @submit.prevent="registerOrganization" action="/auth/registration/organization" method="post">
               <p v-if="errorMessage"> {{ errorMessage }}</p>
               <b-form-group label="Email" label-for="email">
                 <b-form-input id="email" v-model="form.email" type="email" required></b-form-input>

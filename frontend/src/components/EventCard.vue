@@ -1,13 +1,13 @@
 <template>
   <b-col>
     <b-card
-      title="Card"
-      img-src="https://via.placeholder.com/300"
       class="mb-2"
-      alt="Event Image"
       style="max-width: 20rem"
+      height="300px"
     >
-      <b-card-text>text</b-card-text>
+      <img :src="imageUrl" alt="Event Photo" width="150rem" height="150rem"/>
+      <h2>{{ title }}</h2>
+      <b-card-text>{{ description }}</b-card-text>
       <b-button variant="primary">Apply</b-button>
     </b-card>
   </b-col>
@@ -24,5 +24,24 @@ export default {
     BCardText,
     BButton,
   },
+  props: {
+    title: {
+      type: String,
+      required: true
+    },
+    description: {
+      type: String,
+      required: true
+    },
+    photo: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    imageUrl() {
+      return `/api/${this.photo}`;
+    }
+  }
 };
 </script>

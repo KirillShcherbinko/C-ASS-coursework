@@ -3,7 +3,7 @@
       <b-row class="justify-content-center">
         <b-col md="8">
           <b-card title="Регистрация спортсмена">
-            <b-form @submit.prevent="registerAthlete">
+            <b-form @submit.prevent="registerAthlete" action="/auth/registration/athlete" method="post">
               <p v-if="errorMessage"> {{ errorMessage }}</p>
               <!-- Email -->
               <b-form-group label="Email" label-for="email" style="text-align:left">
@@ -29,12 +29,16 @@
               </b-form-group>
   
               <b-form-group label="Фото" label-for="photo" style="text-align:left">
-                <input 
-                    id="photo" 
+                <div class="mb-3">
+                  <label for="photo" class="form-label">Выберите файл</label>
+                  <input
+                    id="photo"
                     type="file"
+                    class="form-control"
                     accept="image/jpeg"
                     @change="handleFileChange"
-                ><input>
+                  />
+                </div>
               </b-form-group>
 
   
@@ -64,7 +68,7 @@
               </b-form-group>
   
               <!-- Характеристики -->
-              <b-form-group label="Возраст" label-for="age" style="text-align:left">
+              <b-form-group label="Возраст" label-for="age" style="text-align:left" min="6" max="100">
                 <b-form-input id="age" v-model="form.age" type="number" required></b-form-input>
               </b-form-group>
   
@@ -72,11 +76,11 @@
                 <b-form-select id="gender" v-model="form.gender" :options="genderOptions" required></b-form-select>
               </b-form-group>
   
-              <b-form-group label="Вес (кг)" label-for="weight" style="text-align:left">
+              <b-form-group label="Вес (кг)" label-for="weight" style="text-align:left" min="10">
                 <b-form-input id="weight" v-model="form.weight" type="number"></b-form-input>
               </b-form-group>
   
-              <b-form-group label="Рост (см)" label-for="height" style="text-align:left">
+              <b-form-group label="Рост (см)" label-for="height" style="text-align:left" min="50">
                 <b-form-input id="height" v-model="form.height" type="number"></b-form-input>
               </b-form-group>
   
@@ -127,6 +131,7 @@
         form: {
           email: "",
           password: "",
+          role: "athlete",
           surname: "",
           firstname: "",
           patronymic: "",

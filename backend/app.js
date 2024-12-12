@@ -19,7 +19,6 @@ app.use(fileUpload({}));
 app.use("/main", mainRouter);
 app.use("/auth", authRouter);
 app.use("/profile", profileRouter);
-//app.use("/news", newsRouter);
 
 const PORT = process.env.PORT || 5000;
 console.log(process.env);

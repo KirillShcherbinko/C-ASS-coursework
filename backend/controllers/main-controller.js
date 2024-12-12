@@ -7,6 +7,7 @@ class MainController {
     static async getAllEvents(req, res) {
         try {
             const events = await MainService.getAllEvents();
+            console.log(`Отработал бэкенд на порту ${process.env.PORT}`);
             return res.status(200).json({message: "События успешно получены", events});
         } catch (err) {
             res.status(500).json({message: err.message || "Ошибка при получении событий"});
@@ -33,6 +34,19 @@ class MainController {
 
             const event = await MainService.createEvent(req.user.id, req.body);
             res.status(201).json({message: "Событие успешно создано", event})
+        } catch(err) {
+            res.status(500).json({message: err.message || "Не удалось создать событие"});
+        }
+    }
+
+    static async createApplication(req, res) {
+        try {
+            console.log(req.params);
+            if (!req.user || req.user.role !== "athlete") {
+                return res.status(403).json({message: "Доступ только для спортсменов"});       
+            }
+            const event = await MainService.createApplication(req.user.id, req.params.eventId);
+            res.status(201).json({message: "Заявка принята", event});
         } catch(err) {
             res.status(500).json({message: err.message || "Не удалось создать событие"});
         }

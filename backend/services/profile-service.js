@@ -1,7 +1,9 @@
 import User from "../models/User.js";
 import Athlete from "../models/Athlete.js";
 import Organization from "../models/Organization.js";
+import Application from "../models/Application.js";
 import FileService from "../services/file-service.js";
+import { Types } from "mongoose";
 
 // Функция для проверки пользователя
 const checkUser = async (userId) => {
@@ -23,10 +25,10 @@ const checkRoleData = (roleData) => {
 
 // Функция для проверки заявок
 const checkApplications = (applications) => {
-    if (!applications || applications.length === 0) {
+    if (!applications.links || applications.links.length === 0) {
         throw new Error ("Список заявок пуст");
     }
-    return applications;
+    return applications.links;
 }
 
 class ProfileService {
@@ -74,7 +76,16 @@ class ProfileService {
         const roleData = checkRoleData(user.roleData);
         const applications = checkApplications(roleData.applications);
 
-        return {message: "Список заявок успешно получен", applications};
+        // Получение данных заявок
+        const applicationData = await Promise.all(applications.map(async (application) => {
+            if (!Types.ObjectId.isValid(application)) {
+                throw new Error(`Invalid application ID: ${application}`);
+            }
+            return await Application.findById(application);
+        }));
+
+        return { message: "Список заявок успешно получен", applicationData };
+        
     }
 
     static async updateApplication(userId, applicationId, status) {

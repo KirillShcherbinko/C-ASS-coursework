@@ -6,6 +6,7 @@ export const registrationHandler = async (data, router) => {
         router.push("/auth/login");
         return res;
     } catch (err) {
+        console.log(err.response.data.message);
         return err.response?.data?.message || "Ошибка при регистрации"
     }
 }

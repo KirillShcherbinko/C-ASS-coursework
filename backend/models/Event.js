@@ -6,13 +6,13 @@ const EventSchema = new Schema({
 
     // Описание
     title: { type: String, required: true },
-    description: { type: String },
+    description: { type: String, required: true },
 
     // Данные для ориентации пользователей
     sport: { type: String, required: true, index: true },
     date: { type: Date, required: true, index: true },
     location: { type: String, required: true },
-    photo: { type: String },
+    photo: { type: String, default: "default-image.jpg" },
 
     // Варианты фильтрации
     minAge: { type: Number },
