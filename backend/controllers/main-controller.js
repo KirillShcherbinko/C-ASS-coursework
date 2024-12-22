@@ -1,6 +1,8 @@
 import MainService from "../services/main-service.js";
 import FileService from "../services/file-service.js";
 import { validationResult } from "express-validator";
+import User from "../models/User.js";
+import Application from "../models/Application.js";
 
 
 class MainController {
@@ -41,16 +43,44 @@ class MainController {
 
     static async createApplication(req, res) {
         try {
-            console.log(req.params);
+            // Проверяем роль пользователя
             if (!req.user || req.user.role !== "athlete") {
-                return res.status(403).json({message: "Доступ только для спортсменов"});       
+                return res.status(403).json({ message: "Доступ только для спортсменов" });
             }
-            const event = await MainService.createApplication(req.user.id, req.params.eventId);
-            res.status(201).json({message: "Заявка принята", event});
-        } catch(err) {
-            res.status(500).json({message: err.message || "Не удалось создать событие"});
+    
+            const userId = req.user.id;
+            const eventId = req.body.eventId;
+    
+            // Получаем пользователя из базы данных и пополняем данные о заявках, если роль athlete
+            const user = await User.findById(userId).populate("roleData");
+
+            // Проверяем, что у пользователя есть роль и данные по заявкам
+            if (!user.roleData) {
+                return res.status(400).json({ message: "Отсутствуют данные о заявках для этой роли" });
+            }
+
+            // Проверка на существование заявок у спортсмена (если у него роль "athlete")
+            if (user.role === "athlete" && user.roleData.applications && user.roleData.applications.links.length !== 0) {
+                // Преобразуем все ObjectId в строку и проверяем на существование заявки с eventId
+                const isAlreadyApplied = await Promise.all(user.roleData.applications.links.map(async (applicationId) => {
+                    const application = await Application.findById(applicationId); // Ищем заявку по ID
+                    return application && application.eventId.toString() === eventId.toString(); // Сравниваем eventId в заявке
+                }));
+
+                // Если найдена хотя бы одна заявка, которая уже подана на это событие
+                if (isAlreadyApplied.includes(true)) {
+                    return res.status(400).json({ message: "Заявка уже существует на это событие" });
+                }
+            }
+        
+            // Создаём новую заявку
+            const event = await MainService.createApplication(userId, eventId);
+            res.status(201).json({ message: "Заявка принята", event });
+        } catch (err) {
+            res.status(500).json({ message: err.message || "Не удалось подать заявку" });
         }
     }
+    
 }
 
 export default MainController;

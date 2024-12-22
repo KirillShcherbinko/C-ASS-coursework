@@ -7,7 +7,7 @@
     <b-container>
       <b-row class="d-flex flex-row flex-wrap align-items-center" align-v="center">
         <b-col v-for="event in paginationEvents" :key="event._id" cols="auto" class="mb-3">
-          <event-card :event="event" />
+          <event-card :event="event" @error="handleError" />
         </b-col>
       </b-row>
     </b-container>
@@ -68,8 +68,11 @@ export default {
     },
   },
   methods: {
+    handleError(message) {
+      this.errMessage = message; // Записываем сообщение об ошибке
+    },
     clearMessage() {
-      this.errMessage = ""; 
+      this.errMessage = ""; // Очистка сообщения об ошибке
     },
   },
 };

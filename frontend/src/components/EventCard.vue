@@ -1,22 +1,41 @@
 <template>
   <b-col class="event-card">
     <b-card class="mb-3" style="max-width: 20rem;" align="center">
-      <b-card-img 
-        :src="imageUrl" 
-        alt="Event Photo" 
+      <b-card-img
+        :src="imageUrl"
+        alt="Event Photo"
         class="event-card__photo"
       ></b-card-img>
       <b-card-title class="event-card__title">{{ event.title }}</b-card-title>
       <div class="event-card__actions">
-        <b-button variant="primary" class="event-card__btn">Apply</b-button>
-        <b-button variant="secondary" @click="viewEvent" class="event-card__btn">View</b-button>
+        <b-button
+          variant="primary"
+          @click="postApplication"
+          class="event-card__btn"
+        >
+          Apply
+        </b-button>
+        <b-button
+          variant="secondary"
+          @click="viewEvent"
+          class="event-card__btn"
+        >
+          View
+        </b-button>
       </div>
     </b-card>
   </b-col>
 </template>
 
 <script>
-import { BCol, BCard, BCardImg, BCardTitle, BCardText, BButton } from "bootstrap-vue-3";
+import {
+  BCol,
+  BCard,
+  BCardImg,
+  BCardTitle,
+  BButton,
+} from "bootstrap-vue-3";
+import { sendApplication } from "../handlers/home-handlers.js";
 
 export default {
   name: "EventCard",
@@ -25,7 +44,6 @@ export default {
     BCard,
     BCardImg,
     BCardTitle,
-    BCardText,
     BButton,
   },
   props: {
@@ -43,11 +61,20 @@ export default {
     viewEvent() {
       const eventString = encodeURIComponent(JSON.stringify(this.event));
       this.$router.push({
-        name: 'EventDetails',
+        name: "EventDetails",
         params: { id: this.event._id },
-        query: { event: eventString }
+        query: { event: eventString },
       });
-    }
+    },
+    async postApplication() {
+      try {
+        const res = await sendApplication(this.event._id);
+        console.log(res);
+        console.log("Application sent successfully!");
+      } catch (err) {
+        this.$emit("error", err.response.data.message); // Передача ошибки в родителя
+      }
+    },
   },
 };
 </script>
@@ -65,12 +92,6 @@ export default {
   font-size: 18px;
   font-weight: bold;
   margin: 8px 0;
-}
-
-.event-card__description {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: auto;
 }
 
 .event-card__actions {
