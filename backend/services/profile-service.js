@@ -36,7 +36,7 @@ class ProfileService {
         const user = await checkUser(userId);
         const roleData = checkRoleData(user.roleData);
 
-        return {message: "Данные получены успешно", roleData};
+        return {message: "Данные получены успешно", role: user.role, roleData};
     }
 
     static async updateProfile(userId, newData) {

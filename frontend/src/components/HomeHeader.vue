@@ -22,7 +22,8 @@
         </b-col>
 
         <b-col class="d-flex justify-content-end align-items-center">
-          <b-button variant="primary" @click="goToLogin">Войти</b-button>
+          <b-button v-if="isAuthenticated" variant="primary" @click="goToProfile">Профиль</b-button>
+          <b-button v-else variant="primary" @click="goToLogin">Войти</b-button>
         </b-col>
       </b-row>
     </b-container>
@@ -45,9 +46,16 @@ export default {
     BButton,
     BLink,
   },
+  computed: {
+    isAuthenticated() {
+      return isAuthenticated(); // Вызываем функцию
+    },
+  },
   methods: {
+    goToProfile() {
+      this.$router.push('/profile');
+    },
     goToLogin() {
-      console.log(this.$router);
       this.$router.push('/auth/login');
     }
   }

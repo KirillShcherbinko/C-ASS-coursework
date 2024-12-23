@@ -6,7 +6,7 @@ import Registration from "./views/Registration.vue";
 import AthleteRegistration from "./views/AthleteRegistration.vue";
 import OrganizationRegistration from "./views/OrganizationRegistration.vue";
 import EventDetails from "./views/EventDetails.vue";
-//import Profile from "./views/Profile.vue";
+import Profile from "./views/Profile.vue";
 
 const routes = [
     { path: '/', name: 'Home', component: Home },
@@ -15,7 +15,7 @@ const routes = [
     { path: '/auth/registration/athlete', name: 'AthleteRegistration', component: AthleteRegistration },
     { path: '/auth/registration/organization', name: 'OrganizationRegistration', component: OrganizationRegistration },
     { path: '/event/:id', name: 'EventDetails', component: EventDetails, props: true },
-    //{ path: "/profile" , name: "Profile", component: Profile },
+    { path: "/profile" , name: "Profile", component: Profile },
   ];
 
 const router = createRouter({
